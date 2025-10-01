@@ -1,0 +1,82 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Build directories
+bin/
+_build/
+out/
+dist/
+
+# Coverage and profiling
+*.out
+*.prof
+
+# =====================
+# Dependency directories
+# =====================
+vendor/
+
+# =====================
+# Environment files
+# =====================
+.env
+.env.*
+.env.local
+.env.*.local
+
+# =====================
+# Logs
+# =====================
+*.log
+logs/
+*.tmp
+
+# =====================
+# IDE / Editor files
+# =====================
+# VS Code
+.vscode/
+.history/
+# JetBrains IDEs
+.idea/
+*.iml
+# Vim / Neovim
+*.swp
+*.swo
+*.bak
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# =====================
+# OS generated files
+# =====================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =====================
+# Misc / Temporary files
+# =====================
+*.tmp
+*.temp
+*.old
+*.backup
+*.orig
+*.rej
+
+# =====================
+# Go tooling
+# =====================
+# Go workspace file
+go.work
+# Go module download cache
+Gopkg.lock
+
+makefile
+internal/db/generated/*.go

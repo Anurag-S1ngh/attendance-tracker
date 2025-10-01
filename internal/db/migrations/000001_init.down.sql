@@ -1,0 +1,8 @@
+-- Drop tables with CASCADE
+DROP TABLE IF EXISTS attendance CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+-- Drop enums with CASCADE
+DROP TYPE IF EXISTS attendance_status CASCADE;
+
