@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Anurag-S1ngh/attendance-tracker/internal/service"
@@ -18,14 +19,12 @@ func NewMiddlewareHandler(s *service.AuthMiddlewareService) *AuthMiddlewareHandl
 }
 
 func (h *AuthMiddlewareHandler) AuthMiddleware(c *gin.Context) {
-	token := c.GetHeader("Authorization")
-	userID, err := h.authMiddlewareService.AuthMiddleware(token)
+	err := h.authMiddlewareService.AuthMiddleware(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		c.Abort()
+		fmt.Println(err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-	c.Set("userID", userID)
 
 	c.Next()
 }

@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/Anurag-S1ngh/attendance-tracker/internal/service"
 	"github.com/gin-gonic/gin"
@@ -18,47 +16,6 @@ func NewAuthHandler(s *service.AuthService) *AuthHandler {
 	return &AuthHandler{
 		authService: s,
 	}
-}
-
-func (h *AuthHandler) Login(c *gin.Context) {
-	var req struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
-		return
-	}
-
-	token, err := h.authService.Login(c, req.Email, req.Password)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"token": token})
-}
-
-func (h *AuthHandler) Register(c *gin.Context) {
-	var req struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
-		return
-	}
-
-	err := h.authService.Register(c, req.Email, req.Password)
-	if err != nil {
-		if strings.Contains(err.Error(), "duplicate key") {
-			c.JSON(http.StatusConflict, gin.H{"error": "user already exists"})
-			return
-		}
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"status": "user created"})
 }
 
 func (h *AuthHandler) SignInWithProvider(c *gin.Context) {
@@ -82,7 +39,11 @@ func (h *AuthHandler) CallbackHandler(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(user)
+	err = h.authService.SaveSession(c, user.Email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.Redirect(http.StatusTemporaryRedirect, "/")
+	c.Redirect(http.StatusTemporaryRedirect, "http://localhost:5173")
 }

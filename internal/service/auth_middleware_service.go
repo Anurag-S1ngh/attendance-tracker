@@ -3,38 +3,37 @@ package service
 import (
 	"errors"
 
-	"github.com/Anurag-S1ngh/attendance-tracker/pkg/jwt"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
+	"go.uber.org/zap"
 )
 
 type AuthMiddlewareService struct {
-	jwt          *jwt.Manager
-	clientID     string
-	clientSecret string
-	callBackURL  string
+	store  *sessions.CookieStore
+	logger *zap.Logger
 }
 
-func NewAuthMiddlewareService(jwtSecret, clientID, clientSecret, callBackURL string) *AuthMiddlewareService {
+func NewAuthMiddlewareService(store *sessions.CookieStore, logger *zap.Logger) *AuthMiddlewareService {
 	return &AuthMiddlewareService{
-		jwt:          jwt.NewManager(jwtSecret),
-		clientID:     clientID,
-		clientSecret: clientSecret,
-		callBackURL:  callBackURL,
+		store:  store,
+		logger: logger,
 	}
 }
 
-func (s *AuthMiddlewareService) AuthMiddleware(token string) (string, error) {
-	if token == "" {
-		return "", errors.New("unauthorized")
-	}
-
-	decoded, err := s.jwt.Verify(token)
+func (s *AuthMiddlewareService) AuthMiddleware(ctx *gin.Context) error {
+	session, err := s.store.Get(ctx.Request, "user_session")
 	if err != nil {
-		return "", errors.New("unauthorized")
+		s.logger.Error("failed to get user session", zap.Error(err))
+		return errors.New("failed to get user session")
 	}
 
-	if decoded["user_id"] == nil {
-		return "", errors.New("unauthorized")
+	userID, ok := session.Values["user_id"]
+	if !ok {
+		s.logger.Error("unauthorized", zap.Error(err))
+		return errors.New("unauthorized")
 	}
 
-	return decoded["user_id"].(string), nil
+	ctx.Set("userID", userID)
+
+	return nil
 }

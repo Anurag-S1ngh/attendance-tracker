@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15.2-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: attendance_tracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - attendance-tracker-db:/var/lib/postgresql/data
+
+  backend:
+    restart: always
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health_check"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    depends_on:
+      - db
+
+volumes:
+  attendance-tracker-db:

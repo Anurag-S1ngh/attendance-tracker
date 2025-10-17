@@ -18,13 +18,13 @@ func NewEventsHandler(s *service.EventsService) *EventsHandler {
 	}
 }
 
-func (h *EventsHandler) GetEvents(c *gin.Context) {
+func (h *EventsHandler) GetAllEvents(c *gin.Context) {
 	userID, ok := c.Get("userID")
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "sign in first"})
 		return
 	}
-	events, err := h.eventsService.GetEvents(c, userID.(string))
+	events, err := h.eventsService.GetAllEvents(c, userID.(string))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -77,4 +77,26 @@ func (h *EventsHandler) DeleteEvent(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "event deleted"})
+}
+
+func (h *EventsHandler) GetEvent(c *gin.Context) {
+	eventUUID, err := uuid.Parse(c.Param("eventID"))
+	if err != nil || eventUUID == uuid.Nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid event id"})
+		return
+	}
+
+	userID, ok := c.Get("userID")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "sign in first"})
+		return
+	}
+
+	event, err := h.eventsService.GetEvent(c, userID.(string), eventUUID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"event": event})
 }

@@ -10,10 +10,11 @@ import (
 type Config struct {
 	Port         string
 	DBURL        string
-	JWTSecret    string
 	ClientID     string
 	ClientSecret string
 	CallBackURL  string
+	HASHKEYHEX   string
+	BLOCKKEYHEX  string
 }
 
 func Load() *Config {
@@ -25,10 +26,11 @@ func Load() *Config {
 	return &Config{
 		Port:         getEnv("PORT", "8000"),
 		DBURL:        getEnv("DATABASE_URL", "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"),
-		JWTSecret:    getEnv("JWT_SECRET", "JWTSecret"),
 		ClientID:     getEnv("CLIENT_ID", ""),
 		ClientSecret: getEnv("CLIENT_SECRET", ""),
-		CallBackURL:  getEnv("CLIENT_CALLBACK_URL", ""),
+		CallBackURL:  getEnv("CLIENT_CALLBACK_URL", "4d0a5003a7ada6c"),
+		HASHKEYHEX:   getEnv("HASHKEYHEX", "52007e5b1f584"),
+		BLOCKKEYHEX:  getEnv("BLOCKKEYHEX", "52007e5b1f584"),
 	}
 }
 
