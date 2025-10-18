@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,11 +17,8 @@ type Config struct {
 }
 
 func Load() *Config {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Error loading .env file")
-		return nil
-	}
+	godotenv.Load()
+
 	return &Config{
 		Port:         getEnv("PORT", "8000"),
 		DBURL:        getEnv("DATABASE_URL", "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"),
