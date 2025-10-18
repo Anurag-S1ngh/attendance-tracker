@@ -1,5 +1,4 @@
-# Build stage
-FROM golang:1.25-alpine AS builder
+FROM golang:1.25-alpine 
 
 WORKDIR /app
 
@@ -11,13 +10,6 @@ COPY . .
 RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 RUN sqlc generate
 RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/server/main.go
-
-# Final stage
-FROM alpine:latest
-
-WORKDIR /app
-
-COPY --from=builder /server .
 
 EXPOSE 8000
 
