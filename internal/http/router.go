@@ -32,8 +32,8 @@ func NewRouter(authService *service.AuthService, eventsService *service.EventsSe
 
 	v1 := r.Group("/api/v1")
 	{
-		r.GET("/auth/:provider", authHandler.SignInWithProvider)
-		r.GET("/auth/:provider/callback", authHandler.CallbackHandler)
+		v1.GET("/auth/:provider", authHandler.SignInWithProvider)
+		v1.GET("/auth/:provider/callback", authHandler.CallbackHandler)
 
 		v1.GET("/event", authMiddlewareHandler.AuthMiddleware, eventsHandler.GetAllEvents)
 		v1.GET("/event/:eventID", authMiddlewareHandler.AuthMiddleware, eventsHandler.GetEvent)
