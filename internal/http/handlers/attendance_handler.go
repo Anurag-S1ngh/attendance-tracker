@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Anurag-S1ngh/attendance-tracker/internal/service"
@@ -24,6 +25,7 @@ func (h *AttendanceHandler) GetAttendance(c *gin.Context) {
 	}
 	attendance, err := h.attendanceService.GetAttendance(c, userID.(string))
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -37,12 +39,14 @@ func (h *AttendanceHandler) MarkAttendance(c *gin.Context) {
 		Date     string `json:"date"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 		return
 	}
 
 	eventUUID, err := uuid.Parse(c.Param("eventID"))
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid event id"})
 		return
 	}
@@ -55,6 +59,7 @@ func (h *AttendanceHandler) MarkAttendance(c *gin.Context) {
 
 	attendance, err := h.attendanceService.MarkAttendance(c, userID.(string), req.Attended, req.Date, eventUUID)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
 		return
 	}
@@ -65,6 +70,7 @@ func (h *AttendanceHandler) MarkAttendance(c *gin.Context) {
 func (h *AttendanceHandler) DeleteAttendance(c *gin.Context) {
 	attendanceUUID, err := uuid.Parse(c.Param("attendanceID"))
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid event id"})
 		return
 	}
@@ -77,6 +83,7 @@ func (h *AttendanceHandler) DeleteAttendance(c *gin.Context) {
 
 	err = h.attendanceService.DeleteAttendance(c, userID.(string), attendanceUUID)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

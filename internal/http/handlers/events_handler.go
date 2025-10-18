@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Anurag-S1ngh/attendance-tracker/internal/service"
@@ -26,6 +27,7 @@ func (h *EventsHandler) GetAllEvents(c *gin.Context) {
 	}
 	events, err := h.eventsService.GetAllEvents(c, userID.(string))
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -38,6 +40,7 @@ func (h *EventsHandler) CreateEvent(c *gin.Context) {
 		Name string `json:"name"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 		return
 	}
@@ -50,6 +53,7 @@ func (h *EventsHandler) CreateEvent(c *gin.Context) {
 
 	event, err := h.eventsService.CreateEvent(c, req.Name, userID.(string))
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -60,6 +64,7 @@ func (h *EventsHandler) CreateEvent(c *gin.Context) {
 func (h *EventsHandler) DeleteEvent(c *gin.Context) {
 	eventUUID, err := uuid.Parse(c.Param("eventID"))
 	if err != nil || eventUUID == uuid.Nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid event id"})
 		return
 	}
@@ -72,6 +77,7 @@ func (h *EventsHandler) DeleteEvent(c *gin.Context) {
 
 	err = h.eventsService.DeleteEvent(c, userID.(string), eventUUID)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -82,6 +88,7 @@ func (h *EventsHandler) DeleteEvent(c *gin.Context) {
 func (h *EventsHandler) GetEvent(c *gin.Context) {
 	eventUUID, err := uuid.Parse(c.Param("eventID"))
 	if err != nil || eventUUID == uuid.Nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid event id"})
 		return
 	}
@@ -94,6 +101,7 @@ func (h *EventsHandler) GetEvent(c *gin.Context) {
 
 	event, err := h.eventsService.GetEvent(c, userID.(string), eventUUID)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

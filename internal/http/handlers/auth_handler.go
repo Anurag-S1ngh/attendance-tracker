@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Anurag-S1ngh/attendance-tracker/internal/service"
@@ -35,12 +36,14 @@ func (h *AuthHandler) CallbackHandler(c *gin.Context) {
 
 	user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	if err != nil {
+		fmt.Println(err)
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
 	err = h.authService.SaveSession(c, user.Email)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
