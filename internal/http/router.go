@@ -29,11 +29,11 @@ func NewRouter(authService *service.AuthService, eventsService *service.EventsSe
 	authMiddlewareHandler := middleware.NewMiddlewareHandler(authMiddlwareService)
 
 	r.GET("/health_check", healthCheckHandler.HealthCheck)
+	r.GET("/auth/:provider", authHandler.SignInWithProvider)
+	r.GET("/auth/:provider/callback", authHandler.CallbackHandler)
 
 	v1 := r.Group("/api/v1")
 	{
-		v1.GET("/auth/:provider", authHandler.SignInWithProvider)
-		v1.GET("/auth/:provider/callback", authHandler.CallbackHandler)
 
 		v1.GET("/event", authMiddlewareHandler.AuthMiddleware, eventsHandler.GetAllEvents)
 		v1.GET("/event/:eventID", authMiddlewareHandler.AuthMiddleware, eventsHandler.GetEvent)
