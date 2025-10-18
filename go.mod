@@ -11,7 +11,6 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/markbates/goth v1.82.0
-	go.uber.org/zap v1.27.0
 )
 
 require (
@@ -20,7 +19,6 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
-	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/oauth2 v0.31.0 // indirect
 )
 

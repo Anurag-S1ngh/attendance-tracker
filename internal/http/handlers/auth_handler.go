@@ -43,10 +43,9 @@ func (h *AuthHandler) CallbackHandler(c *gin.Context) {
 
 	err = h.authService.SaveSession(c, user.Email)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
 
-	c.Redirect(http.StatusTemporaryRedirect, "https://traccker.anuragcode.me")
+	c.Redirect(http.StatusTemporaryRedirect, "http://localhost:5173")
 }

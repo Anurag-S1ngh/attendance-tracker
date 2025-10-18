@@ -14,7 +14,6 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
-	"go.uber.org/zap"
 )
 
 var Store *sessions.CookieStore
@@ -40,13 +39,10 @@ func main() {
 
 	Store = sessions.NewCookieStore(hashKey, blockKey)
 
-	logger, _ := zap.NewDevelopment()
-	defer logger.Sync()
-
-	authService := service.NewAuthService(query, Store, logger)
-	attendanceService := service.NewAttendanceService(query, logger)
-	eventsService := service.NewEventService(query, logger)
-	authMiddlewareService := service.NewAuthMiddlewareService(Store, logger)
+	authService := service.NewAuthService(query, Store)
+	attendanceService := service.NewAttendanceService(query)
+	eventsService := service.NewEventService(query)
+	authMiddlewareService := service.NewAuthMiddlewareService(Store)
 
 	goth.UseProviders(
 		google.New(cfg.ClientID, cfg.ClientSecret, cfg.CallBackURL),
@@ -55,7 +51,7 @@ func main() {
 
 	router := http.NewRouter(authService, eventsService, attendanceService, authMiddlewareService)
 
-	logger.Info("server is running on port", zap.String("port", cfg.Port))
+	log.Printf("server is running on port %s", cfg.Port)
 	if err := router.Run(":" + cfg.Port); err != nil {
 		log.Fatal(err)
 	}

@@ -3,35 +3,33 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	db "github.com/Anurag-S1ngh/attendance-tracker/internal/db/generated"
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 )
 
 type AttendanceService struct {
-	db     *db.Queries
-	logger *zap.Logger
+	db *db.Queries
 }
 
-func NewAttendanceService(db *db.Queries, logger *zap.Logger) *AttendanceService {
+func NewAttendanceService(db *db.Queries) *AttendanceService {
 	return &AttendanceService{
-		db:     db,
-		logger: logger,
+		db: db,
 	}
 }
 
 func (s *AttendanceService) GetAttendance(ctx context.Context, userID string) ([]db.GetAttendanceRow, error) {
 	userUUID, err := uuid.Parse(userID)
 	if err != nil {
-		s.logger.Error("unauthorized", zap.Error(err))
+		log.Printf("unauthorized: %v", err)
 		return []db.GetAttendanceRow{}, errors.New("unauthorized")
 	}
 
 	attendances, err := s.db.GetAttendance(ctx, userUUID)
 	if err != nil {
-		s.logger.Error("failed to get attendance", zap.Error(err))
+		log.Printf("failed to get attendance: %v", err)
 		return []db.GetAttendanceRow{}, errors.New("internal server error")
 	}
 
@@ -46,20 +44,20 @@ func (s *AttendanceService) MarkAttendance(ctx context.Context, userID, attended
 	}
 
 	if _, ok := valid[attended]; !ok {
-		s.logger.Error("invalid input", zap.String("attended", attended))
+		log.Printf("invalid input: attended=%s", attended)
 		return db.Attendance{}, errors.New("invalid input")
 	}
 
 	userUUID, err := uuid.Parse(userID)
 	if err != nil {
-		s.logger.Error("unauthorized", zap.Error(err))
+		log.Printf("unauthorized: %v", err)
 		return db.Attendance{}, errors.New("unauthorized")
 	}
 
 	layout := "2006-01-02T15:04:05.000Z"
 	date, err := time.Parse(layout, dateStr)
 	if err != nil {
-		s.logger.Error("invalid date", zap.Error(err))
+		log.Printf("invalid date: %v", err)
 		return db.Attendance{}, errors.New("invalid date")
 	}
 
@@ -71,7 +69,7 @@ func (s *AttendanceService) MarkAttendance(ctx context.Context, userID, attended
 		Attended: db.AttendanceStatus(attended),
 	})
 	if err != nil {
-		s.logger.Error("failed to mark attendance", zap.Error(err))
+		log.Printf("failed to mark attendance: %v", err)
 		return db.Attendance{}, errors.New("internal server error")
 	}
 
@@ -81,7 +79,7 @@ func (s *AttendanceService) MarkAttendance(ctx context.Context, userID, attended
 func (s *AttendanceService) DeleteAttendance(ctx context.Context, userID string, attendanceUUID uuid.UUID) error {
 	userUUID, err := uuid.Parse(userID)
 	if err != nil {
-		s.logger.Error("unauthorized", zap.Error(err))
+		log.Printf("unauthorized: %v", err)
 		return errors.New("unauthorized")
 	}
 
@@ -90,7 +88,7 @@ func (s *AttendanceService) DeleteAttendance(ctx context.Context, userID string,
 		ID:     attendanceUUID,
 	})
 	if err != nil {
-		s.logger.Error("failed to delete attendance", zap.Error(err))
+		log.Printf("failed to delete attendance: %v", err)
 		return errors.New("internal server error")
 	}
 
