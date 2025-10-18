@@ -45,5 +45,5 @@ func (h *AuthHandler) CallbackHandler(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusTemporaryRedirect, "http://localhost:5173")
+	c.Redirect(http.StatusTemporaryRedirect, "https://traccker.anuragcode.me")
 }
