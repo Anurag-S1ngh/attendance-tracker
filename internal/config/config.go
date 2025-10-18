@@ -14,6 +14,7 @@ type Config struct {
 	CallBackURL  string
 	HASHKEYHEX   string
 	BLOCKKEYHEX  string
+	REDIRECTURL  string
 }
 
 func Load() *Config {
@@ -27,6 +28,7 @@ func Load() *Config {
 		CallBackURL:  getEnv("CLIENT_CALLBACK_URL", "4d0a5003a7ada6c"),
 		HASHKEYHEX:   getEnv("HASHKEYHEX", "52007e5b1f584"),
 		BLOCKKEYHEX:  getEnv("BLOCKKEYHEX", "52007e5b1f584"),
+		REDIRECTURL:  getEnv("REDIRECT_URL", "http://localhost:5173/"),
 	}
 }
 

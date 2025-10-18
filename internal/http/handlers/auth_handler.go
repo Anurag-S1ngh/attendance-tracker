@@ -11,11 +11,13 @@ import (
 
 type AuthHandler struct {
 	authService *service.AuthService
+	redirectURL string
 }
 
-func NewAuthHandler(s *service.AuthService) *AuthHandler {
+func NewAuthHandler(s *service.AuthService, redirectURL string) *AuthHandler {
 	return &AuthHandler{
 		authService: s,
+		redirectURL: redirectURL,
 	}
 }
 
@@ -47,5 +49,5 @@ func (h *AuthHandler) CallbackHandler(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusTemporaryRedirect, "http://localhost:5173")
+	c.Redirect(http.StatusTemporaryRedirect, h.redirectURL)
 }

@@ -10,7 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(authService *service.AuthService, eventsService *service.EventsService, attendanceService *service.AttendanceService, authMiddlwareService *service.AuthMiddlewareService) *gin.Engine {
+func NewRouter(authService *service.AuthService,
+	eventsService *service.EventsService,
+	attendanceService *service.AttendanceService,
+	authMiddlwareService *service.AuthMiddlewareService,
+	redirectURL string,
+) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
@@ -22,7 +27,7 @@ func NewRouter(authService *service.AuthService, eventsService *service.EventsSe
 		MaxAge:           12 * time.Hour,
 	}))
 
-	authHandler := handlers.NewAuthHandler(authService)
+	authHandler := handlers.NewAuthHandler(authService, redirectURL)
 	healthCheckHandler := handlers.NewHealthCheckHandler()
 	eventsHandler := handlers.NewEventsHandler(eventsService)
 	attendanceHandler := handlers.NewAttendanceHandler(attendanceService)

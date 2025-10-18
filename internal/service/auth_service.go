@@ -79,4 +79,3 @@ func (s *AuthService) SaveSession(ctx *gin.Context, email string) error {
 
 	return nil
 }
-

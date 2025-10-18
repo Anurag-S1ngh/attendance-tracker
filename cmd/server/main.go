@@ -49,7 +49,7 @@ func main() {
 	)
 	gothic.Store = Store
 
-	router := http.NewRouter(authService, eventsService, attendanceService, authMiddlewareService)
+	router := http.NewRouter(authService, eventsService, attendanceService, authMiddlewareService, cfg.REDIRECTURL)
 
 	log.Printf("server is running on port %s", cfg.Port)
 	if err := router.Run(":" + cfg.Port); err != nil {
